@@ -7,8 +7,6 @@ on:
 
 jobs:
   build:
-    # Only run on PRs if the source branch is on someone else's repo
-    if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Git Repository
@@ -22,14 +20,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Format with spotless
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: spotlessApply
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: buildDependents -x spotlessCheck
+      - name: Build
+        run: ./gradlew build
       - name: Upload build
         uses: actions/upload-artifact@v3
         with:
